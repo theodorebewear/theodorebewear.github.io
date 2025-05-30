@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Card Probability Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    #container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    #calculator {
+      flex: 1;
+    }
+
+    #backgroundBox {
+      width: 800px;
+      height: 460px;
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    label, select {
+      display: block;
+      margin: 10px 0;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    #breakdown {
+      margin-top: 10px;
+      font-style: italic;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Pokemon TCG: Print Run Estimate Calculator</h2>
+
+  <div id="container">
+    <div id="calculator">
+      <label for="generationSelect">Generation:</label>
+      <select id="generationSelect"></select>
+
+      <label for="setSelect">Set Name:</label>
+      <select id="setSelect"></select>
+
+      <label for="raritySelect">Rarity Tier:</label>
+      <select id="raritySelect"></select>
+
+      <div id="result">Result: </div>
+      <div id="breakdown"></div>
+    </div>
+
+    <div id="backgroundBox"></div>
+  </div>
+
+ <script>
+    const data = {
+      "GEN 1": {
+       "Base Set 1st Edition": {
+        meta: {
+          average_produced: 50000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Rare": { pull_rate: 1.5, number_in_set: 16 },
+          "Holo Rare": { pull_rate: 3, number_in_set: 16 }
+        }
+      },
+      "Base Set Shadowless": {
+        meta: {
+          average_produced: 500000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Rare": { pull_rate: 1.5, number_in_set: 16 },
+          "Holo Rare": { pull_rate: 3, number_in_set: 16 }
+        }
+      },
+	"Base Set Unlimited": {
+        meta: {
+          average_produced: 1200000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Rare": { pull_rate: 1.5, number_in_set: 16 },
+          "Holo Rare": { pull_rate: 3, number_in_set: 16 }
+        }
+      },
+	"Jungle 1st Edition": {
+        meta: {
+          average_produced: 100000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Rare": { pull_rate: 1.5, number_in_set: 16 },
+          "Holo Rare": { pull_rate: 3, number_in_set: 16 }
+        }
+      },
+	"Jungle": {
+        meta: {
+          average_produced: 1200000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Rare": { pull_rate: 1.5, number_in_set: 16 },
+          "Holo Rare": { pull_rate: 3, number_in_set: 16 }
+        }
+      },
+	"Fossil": {
+        meta: {
+          average_produced: 1200000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Rare": { pull_rate: 1.5, number_in_set: 15 },
+          "Holo Rare": { pull_rate: 3, number_in_set: 15 }
+        }
+      },
+	"Base Set 2": {
+        meta: {
+          average_produced: 500000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Rare": { pull_rate: 1.5, number_in_set: 20 },
+          "Holo Rare": { pull_rate: 3, number_in_set: 20 }
+        }
+      },
+	"Team Rocket": {
+        meta: {
+          average_produced: 1200000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Rare": { pull_rate: 1.5, number_in_set: 17 },
+          "Holo Rare": { pull_rate: 3, number_in_set: 17 },
+	 "Secret Rare": { pull_rate: 57, number_in_set: 1}
+        }
+      },
+	"Gym Heros": {
+        meta: {
+          average_produced: 500000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Rare": { pull_rate: 1.5, number_in_set: 19 },
+          "Holo Rare": { pull_rate: 3, number_in_set: 19 }
+        }
+      },
+	"Gym Challenge": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Rare": { pull_rate: 1.5, number_in_set: 20 },
+          "Holo Rare": { pull_rate: 3, number_in_set: 20 }
+        }
+       }
+      },
+      "GEN 2 - NEO": {
+"Neo Genesis": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 3, number_in_set: 19 },
+          "Rare": { pull_rate: 1.5, number_in_set: 19 }
+        }
+      },
+      "Neo Discovery": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 3, number_in_set: 17 },
+          "Rare": { pull_rate: 1.5, number_in_set: 17 }
+        }
+      },
+      "Neo Revelation": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 3, number_in_set: 20 },
+          "Rare": { pull_rate: 1.5, number_in_set: 16 },
+	 "Shining Rare": { pull_rate: 18, number_in_set: 2 }
+        }
+      },
+      "Neo Destiny": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 3, number_in_set: 20 },
+          "Rare": { pull_rate: 1.5, number_in_set: 16 },
+	 "Shining Rare": { pull_rate: 12, number_in_set: 8 }
+        }
+      },
+	"Legendary Collection": {
+        meta: {
+          average_produced: 100000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 3, number_in_set: 20 },
+          "Rare": { pull_rate: 1.5, number_in_set: 16 },
+	 "Reverse Holo": { pull_rate: 1, number_in_set: 120 }
+        }
+      },
+ 	"Expedition Base Set": {
+        meta: {
+          average_produced: 71000000,
+          in_pack: 9
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 3, number_in_set: 32 },
+          "Rare": { pull_rate: 1.5, number_in_set: 32 }
+        }
+      },
+	"Aquapolis": {
+        meta: {
+          average_produced: 71000000,
+          in_pack: 9
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 3, number_in_set: 32 },
+          "Rare": { pull_rate: 1.5, number_in_set: 32 },
+	 "Crystal": {pull_rate: 36, number_in_set: 3 }
+        }
+      },
+	"Skyridge": {
+        meta: {
+          average_produced: 71000000,
+          in_pack: 9
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 3, number_in_set: 32 },
+          "Rare": { pull_rate: 1.5, number_in_set: 32 },
+	 "Crystal": { pull_rate: 18, number_in_set: 6 }
+          }
+        }
+      },
+ "GEN 3 - EX": {
+"Ruby Sapphire": {
+        meta: {
+          average_produced: 71000000,
+          in_pack: 9
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 6, number_in_set: 14 },
+          "ex": { pull_rate: 6, number_in_set: 8 }
+          }
+        },
+"Sandstorm": {
+        meta: {
+          average_produced: 71000000,
+          in_pack: 9
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 6, number_in_set: 14 },
+          "Ex": { pull_rate: 6, number_in_set: 7 },
+	"reverse Holo": { pull_rate: 1, number_in_set: 93 }
+          }
+        },
+"Dragon": {
+        meta: {
+          average_produced: 71000000,
+          in_pack: 9
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 7, number_in_set: 12 },
+          "ex": { pull_rate: 6, number_in_set: 9 },
+	 "Secret Rare": { pull_rate: 36, number_in_set: 3 }
+          }
+        },
+"Team Magma Team Aqua": {
+        meta: {
+          average_produced: 71000000,
+          in_pack: 9
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 4, number_in_set: 12 },
+          "Ex": { pull_rate: 12, number_in_set: 7 },
+	 "Secret Rare": { pull_rate: 108, number_in_set: 2 }
+          }
+        },
+"Hidden Legends": {
+        meta: {
+          average_produced: 71000000,
+          in_pack: 9
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 4, number_in_set: 15 },
+          "ex": { pull_rate: 12, number_in_set: 9 },
+	 "Secret Rare": { pull_rate: 108, number_in_set: 1 }
+          }
+        },
+"FireRed LeafGreen": {
+        meta: {
+          average_produced: 71000000,
+          in_pack: 9
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 4.5, number_in_set: 17 },
+          "Ex": { pull_rate: 12, number_in_set: 9 },
+	 "Secret Rare": { pull_rate: 36, number_in_set: 4 }
+          }
+        },
+"Team Rocket Returns": {
+        meta: {
+          average_produced: 71000000,
+          in_pack: 9
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 4.5, number_in_set: 14 },
+          "ex": { pull_rate: 12, number_in_set: 11 },
+	 "Secret Rare": { pull_rate: 108, number_in_set: 2 },
+	"Gold Star": { pull_rate: 72, number_in_set: 3 }
+          }
+        },
+"Deoxys": {
+        meta: {
+          average_produced: 71000000,
+          in_pack: 9
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 3, number_in_set: 32 },
+          "Ex": { pull_rate: 1.5, number_in_set: 32 },
+	 "Secret Rare": { pull_rate: 18, number_in_set: 6 },
+	" Gold Star": { pull_rate: 72, number_in_set: 3 }
+          }
+        },
+"Emerald": {
+        meta: {
+          average_produced: 95000000,
+          in_pack: 9
+        },
+        rarities: {
+          "Ex": { pull_rate: 12, number_in_set: 11 },
+	 "Secret Rare": { pull_rate: 108, number_in_set: 1 }
+          }
+        },
+"Unseen Forces": {
+        meta: {
+          average_produced: 95000000,
+          in_pack: 9
+        },
+        rarities: {
+          "ex": { pull_rate: 12, number_in_set: 12 },
+	 "Secret Rare": { pull_rate: 108, number_in_set: 2 },
+	"Gold Star": { pull_rate: 72, number_in_set: 3 },
+	"Unown": {pull_rate: 5, number_in_set: 28 }
+          }
+        },
+"Delta Species": {
+        meta: {
+          average_produced: 95000000,
+          in_pack: 9
+        },
+        rarities: {
+          "Ex": { pull_rate: 36, number_in_set: 3 },
+	 "Secret Rare": { pull_rate: 108, number_in_set: 1 },
+	"Gold Star": { pull_rate: 72, number_in_set: 3 }
+          }
+        },
+"Legend Makers": {
+        meta: {
+          average_produced: 95000000,
+          in_pack: 9
+        },
+        rarities: {
+          "ex": { pull_rate: 12, number_in_set: 7 },
+	 "Secret Rare": { pull_rate: 108, number_in_set: 3 },
+	"Gold Star": { pull_rate: 72, number_in_set: 1 }
+          }
+        },
+"Holon Phantoms": {
+        meta: {
+          average_produced: 95000000,
+          in_pack: 9
+        },
+        rarities: {
+          "Ex": { pull_rate: 36, number_in_set: 3 },
+	 "Secret Rare": { pull_rate: 108, number_in_set: 1 },
+	"Gold Star": { pull_rate: 72, number_in_set: 3 }
+          }
+        },
+"Crystal Guardians": {
+        meta: {
+          average_produced: 95000000,
+          in_pack: 9
+        },
+        rarities: {
+          "Ex": { pull_rate: 12, number_in_set: 10 },
+	"Gold Star": { pull_rate: 72, number_in_set: 2 }
+          }
+        },
+"Dragon Frontiers": {
+        meta: {
+          average_produced: 95000000,
+          in_pack: 9
+        },
+        rarities: {
+          "ex": { pull_rate: 12, number_in_set: 10 },
+	"Gold Star": { pull_rate: 72, number_in_set: 2 }
+          }
+        },
+"Power Keepers": {
+        meta: {
+          average_produced: 100000000,
+          in_pack: 9
+        },
+        rarities: {
+          "Ex": { pull_rate: 12, number_in_set: 8 },
+	"Gold Star": { pull_rate: 72, number_in_set: 3 }
+          }
+        }
+      },
+ "GEN 4 - DPPt / HGSS": {
+"Diamond Pearl Base Set": {
+        meta: {
+          average_produced: 100000000,
+          in_pack: 10
+        },
+        rarities: {
+          "Ultra Rare LVX": { pull_rate: 36, number_in_set: 3 }
+        }
+      },
+"DP - Mysterious Treasures": {
+        meta: {
+          average_produced: 203000000,
+          in_pack: 10
+        },
+        rarities: {
+          "Ultra Rare LVX": { pull_rate: 36, number_in_set: 3 },
+          "Secret Rare": { pull_rate: 72, number_in_set: 1 }
+        }
+      },
+"DP - Secret Wonders": {
+        meta: {
+          average_produced: 203000000,
+          in_pack: 10
+        },
+        rarities: {
+          "Ultra Rare LVX": { pull_rate: 36, number_in_set: 2 }
+        }
+      },
+"DP - Great Encounters": {
+        meta: {
+          average_produced: 203000000,
+          in_pack: 10
+        },
+        rarities: {
+          "Ultra Rare LVX": { pull_rate: 36, number_in_set: 4 }
+        }
+      },
+"DP - Majestic Dawn": {
+        meta: {
+          average_produced: 203000000,
+          in_pack: 10
+        },
+        rarities: {
+          "Ultra Rare LVX": { pull_rate: 36, number_in_set: 4 }
+        }
+      },
+"DP - Legends Awaken": {
+        meta: {
+          average_produced: 203000000,
+          in_pack: 10
+        },
+        rarities: {
+          "Ultra Rare LVX": { pull_rate: 18, number_in_set: 7 }
+        }
+      },
+"DP - Stormfront": {
+        meta: {
+          average_produced: 203000000,
+          in_pack: 10
+        },
+        rarities: {
+          "Ultra Rare LVX": { pull_rate: 18, number_in_set: 7 },
+	"Secret Rare": { pull_rate: 72, number_in_set: 3 },
+	"SH1-3": { pull_rate: 36, number_in_set: 3 }
+        }
+      },
+"Platinum": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+          "Ultra Rare LVX": { pull_rate: 18, number_in_set: 6 },
+          "Secret Rare": { pull_rate: 72, number_in_set: 3 },
+	"SH4-6": { pull_rate: 36, number_in_set: 3 }
+        }
+      },
+"Pt - Rising Rivals": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+          "Ultra Rare LVX": { pull_rate: 9, number_in_set: 9 },
+          "Secret Rare": { pull_rate: 36, number_in_set: 3 },
+	"RT1-6": { pull_rate: 18, number_in_set: 6 }
+        }
+      },
+"Pt - Supreme Victors": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+         rarities: {
+          "Ultra Rare LVX": { pull_rate: 9, number_in_set: 7 },
+          "Secret Rare": { pull_rate: 36, number_in_set: 3 },
+	"SH7-9": { pull_rate: 18, number_in_set: 3 }
+        }
+      },
+"Pt - Arceus": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+         rarities: {
+          "Ultra Rare LVX": { pull_rate: 9, number_in_set: 6 },
+          "Arceus1-9": { pull_rate: 18, number_in_set: 9 },
+	"SH10-12": { pull_rate: 18, number_in_set: 3 }
+        }
+      },
+"HeartGold SoulSilver": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Prime": { pull_rate: 7, number_in_set: 6 },
+          "Legend": { pull_rate: 12, number_in_set: 4 },
+	"Alph ONE": { pull_rate: 36, number_in_set: 1 },
+	"Secret Rare": { pull_rate: 36, number_in_set: 1 }
+        }
+      },
+"HGSS - Unleashed": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Prime": { pull_rate: 7, number_in_set: 6 },
+          "Legend": { pull_rate: 12, number_in_set: 6 },
+	"Alph TWO": { pull_rate: 36, number_in_set: 1 }
+        }
+      },
+"HGSS - Undaunted ": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Prime": { pull_rate: 7, number_in_set: 6 },
+          "Legend": { pull_rate: 12, number_in_set: 4 },
+	"Alph THREE": { pull_rate: 36, number_in_set: 1 }
+        }
+      },
+"HGSS - Triumphant": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Prime": { pull_rate: 7, number_in_set: 8 },
+          "Legend": { pull_rate: 12, number_in_set: 4 },
+	"Alph FOUR": { pull_rate: 36, number_in_set: 1 }
+        }
+      },
+"Call of Legends": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 11
+        },
+        rarities: {
+          "Holo Rare": { pull_rate: 3, number_in_set: 19 },
+          "Shining Legendarys": { pull_rate: 18, number_in_set: 11 }
+        }
+      }
+     },
+"GEN 5 - Black White": {
+"Black White Base": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Ultra Rare Full Arts": { pull_rate: 36, number_in_set: 2 },
+ 	"Secret Rare": { pull_rate: 72, number_in_set: 1 }
+        }
+      },
+"Emerging Powers": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Ultra Rare Full Arts": { pull_rate: 36, number_in_set: 2 }
+        }
+      },
+"Noble Victories": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Ultra Rare Full Arts": { pull_rate: 18, number_in_set: 5 },
+ 	"Secret Rare": { pull_rate: 72, number_in_set: 1 }
+        }
+      },
+"Next Destinies": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+	"EX": { pull_rate: 18, number_in_set: 6 },
+ 	"Ultra Rare Full Arts": { pull_rate: 36, number_in_set: 6 },
+ 	"Secret Rare": { pull_rate: 72, number_in_set: 4 }
+        }
+      },
+"Dark Explorers": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+	"EX": { pull_rate: 18, number_in_set: 6 },
+ 	"Ultra Rare Full Arts": { pull_rate: 36, number_in_set: 6 },
+ 	"Secret Rare": { pull_rate: 72, number_in_set: 3 }
+        }
+      },
+"Dragons Exalted": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+	"EX": { pull_rate: 18, number_in_set: 6 },
+ 	"Ultra Rare Full Arts": { pull_rate: 36, number_in_set: 6 },
+ 	"Secret Rare": { pull_rate: 72, number_in_set: 4 }
+        }
+      },
+"Boundaries Crossed": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+	"EX": { pull_rate: 18, number_in_set: 6 },
+ 	"Ultra Rare Full Arts": { pull_rate: 36, number_in_set: 9 },
+	"Ace Spec": { pull_rate: 36, number_in_set: 4 },
+ 	"Secret Rare": { pull_rate: 72, number_in_set: 4 }
+        }
+      },
+"Plasma Storm": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+	"EX": { pull_rate: 18, number_in_set: 8 },
+ 	"Ultra Rare Full Arts": { pull_rate: 36, number_in_set: 5 },
+	"Ace Spec": { pull_rate: 36, number_in_set: 4 },
+ 	"Secret Rare": { pull_rate: 72, number_in_set: 3 }
+        }
+      },
+"Plasma Freeze": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+	"EX": { pull_rate: 18, number_in_set: 6 },
+ 	"Ultra Rare Full Arts": { pull_rate: 36, number_in_set: 8 },
+	"Ace Spec": { pull_rate: 36, number_in_set: 2 },
+ 	"Secret Rare": { pull_rate: 72, number_in_set: 6 }
+        }
+      },
+"Plasma Blast": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+	"EX": { pull_rate: 18, number_in_set: 6 },
+ 	"Ultra Rare Full Arts": { pull_rate: 36, number_in_set: 6 },
+	"Ace Spec": { pull_rate: 36, number_in_set: 4 },
+ 	"Secret Rare": { pull_rate: 72, number_in_set: 4 }
+        }
+      },
+"Legendary Treasures": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Radiant Collection": { pull_rate: 1, number_in_set: 25 },
+ 	"Secret Rare": { pull_rate: 72, number_in_set: 2 }
+        }
+      }
+     },
+"GEN 6 - XY": {
+"XY Base": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+	"EX": { pull_rate: 18, number_in_set: 8 },
+ 	"Ultra Rare Full Arts": { pull_rate: 36, number_in_set: 6 }
+        }
+      },
+"Flashfire": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"EX": { pull_rate: 18, number_in_set: 8 },
+ 	"Ultra Rare Full Art": { pull_rate: 36, number_in_set: 7 },
+	"Secret Rare": { pull_rate: 72, number_in_set: 3 }
+        }
+      },
+"Furious Fists": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"EX": { pull_rate: 18, number_in_set: 7 },
+ 	"Ultra Rare Full Art": { pull_rate: 36, number_in_set: 7 },
+	"Secret Rare": { pull_rate: 72, number_in_set: 2 }
+        }
+      },
+"Phantom Forces": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"EX": { pull_rate: 18, number_in_set: 8 },
+ 	"Ultra Rare Full Art": { pull_rate: 36, number_in_set: 7 },
+	"Secret Rare": { pull_rate: 72, number_in_set: 3 }
+        }
+      },
+"Primal Clash": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"EX": { pull_rate: 9, number_in_set: 12 },
+ 	"Ultra Rare Full Art": { pull_rate: 12, number_in_set: 16 },
+	"Secret Rare": { pull_rate: 72, number_in_set: 4 }
+        }
+      },
+"Double Crisis": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Ultra Rare Full Art": { pull_rate: 12, number_in_set: 2 }
+        }
+      },
+"Roaring Skies": {
+        meta: {
+          average_produced: 250000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"EX": { pull_rate: 9, number_in_set: 11 },
+ 	"Ultra Rare Full Art": { pull_rate: 12, number_in_set: 11 },
+	"Secret Rare": { pull_rate: 72, number_in_set: 2 }
+        }
+      },
+"Ancient Origins": {
+        meta: {
+          average_produced: 350000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"EX": { pull_rate: 9, number_in_set: 11 },
+ 	"Ultra Rare Full Art": { pull_rate: 12, number_in_set: 12 },
+	"Secret Rare": { pull_rate: 72, number_in_set: 5 }
+        }
+      },
+"BREAKthrough": {
+        meta: {
+          average_produced: 350000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"EX": { pull_rate: 9, number_in_set: 8 },
+ 	"Ultra Rare Full Art": { pull_rate: 12, number_in_set: 10 },
+	"Ultra Rare BREAK": { pull_rate: 12, number_in_set: 6 },
+	"Secret Rare": { pull_rate: 72, number_in_set: 2 }
+        }
+      },
+"BREAKpoint": {
+        meta: {
+          average_produced: 350000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"EX": { pull_rate: 9, number_in_set: 8 },
+ 	"Ultra Rare Full Art": { pull_rate: 12, number_in_set: 9 },
+	"Ultra Rare BREAK": { pull_rate: 12, number_in_set: 5 },
+	"Secret Rare": { pull_rate: 72, number_in_set: 2 }
+        }
+      },
+"Generations": {
+        meta: {
+          average_produced: 350000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"EX": { pull_rate: 9, number_in_set: 12 },
+	"Radiant Collection": { pull_rate: 12, number_in_set: 32 }
+        }
+      },
+"Fates Collide": {
+        meta: {
+          average_produced: 350000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"EX": { pull_rate: 9, number_in_set: 13 },
+ 	"Ultra Rare Full Art": { pull_rate: 12, number_in_set: 9 },
+	"Ultra Rare BREAK": { pull_rate: 12, number_in_set: 5 },
+	"Secret Rare": { pull_rate: 72, number_in_set: 1 }
+        }
+      },
+"Steam Siege": {
+        meta: {
+          average_produced: 350000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"EX": { pull_rate: 9, number_in_set: 6 },
+ 	"Ultra Rare Full Art": { pull_rate: 12, number_in_set: 8 },
+	"Ultra Rare BREAK": { pull_rate: 12, number_in_set: 7 },
+	"Secret Rare": { pull_rate: 72, number_in_set: 2 }
+        }
+      },
+"Evolutions": {
+        meta: {
+          average_produced: 400000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"EX": { pull_rate: 9, number_in_set: 12 },
+ 	"Ultra Rare Full Art": { pull_rate: 12, number_in_set: 9 },
+	"Ultra Rare BREAK": { pull_rate: 12, number_in_set: 4 },
+	"Secret Rare": { pull_rate: 72, number_in_set: 5 }
+        }
+      }
+    },
+"GEN 7 - Sun Moon": {
+"Sun Moon Base": {
+        meta: {
+          average_produced: 450000000,
+          in_pack: 10
+        },
+        rarities: {
+	"GX": { pull_rate: 9, number_in_set: 11 },
+ 	"Ultra Rare Full Arts (Pokemon)": { pull_rate: 36, number_in_set: 8 },
+	"Ultra Rare Full Arts (Trainer)": { pull_rate: 72, number_in_set: 4 },
+	"Rainbow Rare": { pull_rate: 68, number_in_set: 8 },
+ 	"Secret Rare GOLD": { pull_rate: 123, number_in_set: 6 }
+        }
+      },
+"Guardian Rising": {
+        meta: {
+          average_produced: 450000000,
+          in_pack: 10
+        },
+        rarities: {
+	"GX": { pull_rate: 9, number_in_set: 12 },
+ 	"Ultra Rare Full Art (Pokemon)": { pull_rate: 34, number_in_set: 12 },
+	"Ultra Rare Full Art (Trainer)": { pull_rate: 138, number_in_set: 3 },
+	"Rainbow Rare": { pull_rate: 77, number_in_set: 15 },
+ 	"Secret Rare GOLD": { pull_rate: 123, number_in_set: 9 }
+        }
+      },
+"Burning Shadows": {
+        meta: {
+          average_produced: 450000000,
+          in_pack: 10
+        },
+        rarities: {
+	"GX": { pull_rate: 9.14, number_in_set: 12 },
+ 	"Ultra Rare Full Art (Pokemon)": { pull_rate: 37.22, number_in_set: 13 },
+	"Ultra Rare Full Art (Trainer)": { pull_rate: 80, number_in_set: 6 },
+	"Rainbow Rare": { pull_rate: 62, number_in_set: 13 },
+ 	"Secret Rare GOLD": { pull_rate: 105, number_in_set: 9 }
+        }
+      },
+"Shining Legends": {
+        meta: {
+          average_produced: 450000000,
+          in_pack: 10
+        },
+        rarities: {
+	"GX": { pull_rate: 8.44, number_in_set: 4 },
+ 	"Ultra Rare Full Art (Pokemon)": { pull_rate: 35.72, number_in_set: 2 },
+	"Ultra Rare Full Art (Trainer)": { pull_rate: 138, number_in_set: 1 },
+	"Rainbow Rare": { pull_rate: 77, number_in_set: 4 },
+ 	"Secret Rare MewTube": { pull_rate: 109, number_in_set: 1 },
+	"Shiny Rare": { pull_rate: 11.46, number_in_set: 6 }
+        }
+      },
+"Crimson Invasion": {
+        meta: {
+          average_produced: 450000000,
+          in_pack: 10
+        },
+        rarities: {
+	"GX": { pull_rate: 12, number_in_set: 8 },
+ 	"Ultra Rare Full Art (Pokemon)": { pull_rate: 30, number_in_set: 8 },
+	"Ultra Rare Full Art (Trainer)": { pull_rate: 85, number_in_set: 3 },
+	"Rainbow Rare": { pull_rate: 90, number_in_set: 8 },
+ 	"Secret Rare GOLD": { pull_rate: 90, number_in_set: 5 }
+        }
+      },
+"Ultra Prism": {
+        meta: {
+          average_produced: 450000000,
+          in_pack: 10
+        },
+        rarities: {
+	"GX": { pull_rate: 12.5, number_in_set: 11 },
+ 	"Ultra Rare Full Art (Pokemon)": { pull_rate: 43, number_in_set: 9 },
+	"Ultra Rare Full Art (Trainer)": { pull_rate: 50, number_in_set: 9 },
+	"Rainbow Rare": { pull_rate: 67, number_in_set: 9 },
+ 	"Secret Rare GOLD (Pokemon)": { pull_rate: 558, number_in_set: 2 },
+	"Secret Rare GOLD (Trainer/Energy)": { pull_rate: 167, number_in_set: 6 },
+	"Prism Star": { pull_rate: 11, number_in_set: 6 }
+        }
+      },
+"Forbidden Light": {
+        meta: {
+          average_produced: 450000000,
+          in_pack: 10
+        },
+        rarities: {
+	"GX": { pull_rate: 13.5, number_in_set: 12 },
+ 	"Ultra Rare Full Art (Pokemon)": { pull_rate: 43, number_in_set: 9 },
+	"Ultra Rare Full Art (Trainer)": { pull_rate: 79, number_in_set: 4 },
+	"Rainbow Rare": { pull_rate: 74, number_in_set: 9 },
+	"Secret Rare GOLD (Trainer/Energy)": { pull_rate: 140, number_in_set: 6 },
+	"Prism Star": { pull_rate: 12.64, number_in_set: 4 }
+        }
+      },
+"Celestial Storm": {
+        meta: {
+          average_produced: 450000000,
+          in_pack: 10
+        },
+        rarities: {
+	"GX": { pull_rate: 9.67, number_in_set: 11 },
+ 	"Ultra Rare Full Art (Pokemon)": { pull_rate: 47.74, number_in_set: 9 },
+	"Ultra Rare Full Art (Trainer)": { pull_rate: 59, number_in_set: 8 },
+	"Rainbow Rare": { pull_rate: 82, number_in_set: 9 },
+	"Secret Rare GOLD (Trainer/Energy)": { pull_rate: 133, number_in_set: 6 },
+	"Prism Star": { pull_rate: 18.27, number_in_set: 3 }
+        }
+      },
+"Dragon Majesty": {
+        meta: {
+          average_produced: 450000000,
+          in_pack: 10
+        },
+        rarities: {
+	"GX": { pull_rate: 6.48, number_in_set: 6 },
+ 	"Ultra Rare Full Art (Pokemon)": { pull_rate: 32, number_in_set: 4 },
+	"Ultra Rare Full Art (Trainer)": { pull_rate: 25, number_in_set: 2 },
+	"Rainbow Rare": { pull_rate: 43, number_in_set: 4 },
+ 	"Secret Rare GOLD (Pokemon)": { pull_rate: 389, number_in_set: 1 },
+	"Secret Rare GOLD (Trainer/Energy)": { pull_rate: 194, number_in_set: 3 },
+	"Prism Star": { pull_rate: 9.26, number_in_set: 2 }
+        }
+      },
+"Lost Thunder": {
+        meta: {
+          average_produced: 450000000,
+          in_pack: 10
+        },
+        rarities: {
+	"GX": { pull_rate: 9.73, number_in_set: 20 },
+ 	"Ultra Rare Full Art (Pokemon)": { pull_rate: 32, number_in_set: 13 },
+	"Ultra Rare Full Art (Trainer)": { pull_rate: 80, number_in_set: 7 },
+	"Rainbow Rare": { pull_rate: 75, number_in_set: 13 },
+	"Secret Rare GOLD (Trainer/Energy)": { pull_rate: 98, number_in_set: 9 },
+	"Prism Star": { pull_rate: 8.22, number_in_set: 7 }
+        }
+      },
+"Team UP": {
+        meta: {
+          average_produced: 450000000,
+          in_pack: 10
+        },
+        rarities: {
+	"GX": { pull_rate: 10.77, number_in_set: 15 },
+ 	"Ultra Rare Full Art (Pokemon)": { pull_rate: 41, number_in_set: 13 },
+	"Ultra Rare Full Art (Trainer)": { pull_rate: 41, number_in_set: 10 },
+	"Rainbow Rare": { pull_rate: 96, number_in_set: 10 },
+	"Secret Rare GOLD (Trainer/Energy)": { pull_rate: 145, number_in_set: 5 },
+	"Prism Star": { pull_rate: 16.77, number_in_set: 4 }
+        }
+      },
+"Unbroken Bonds": {
+        meta: {
+          average_produced: 450000000,
+          in_pack: 10
+        },
+        rarities: {
+	"GX": { pull_rate: 10, number_in_set: 14 },
+ 	"Ultra Rare Full Art (Pokemon)": { pull_rate: 32, number_in_set: 18 },
+	"Ultra Rare Full Art (Trainer)": { pull_rate: 99, number_in_set: 6 },
+	"Rainbow Rare": { pull_rate: 72, number_in_set: 14 },
+	"Secret Rare GOLD (Trainer/Energy)": { pull_rate: 111, number_in_set: 6 }
+        }
+      },
+"Unified Minds": {
+        meta: {
+          average_produced: 450000000,
+          in_pack: 10
+        },
+        rarities: {
+	"GX": { pull_rate: 7.86, number_in_set: 17 },
+ 	"Ultra Rare Full Art (Pokemon)": { pull_rate: 31, number_in_set: 17 },
+	"Ultra Rare Full Art (Trainer)": { pull_rate: 85, number_in_set: 6 },
+	"Rainbow Rare": { pull_rate: 69, number_in_set: 13 },
+	"Secret Rare GOLD (Trainer/Energy)": { pull_rate: 111, number_in_set: 9 }
+        }
+      },
+"Hidden Fates": {
+        meta: {
+          average_produced: 450000000,
+          in_pack: 10
+        },
+        rarities: {
+	"GX": { pull_rate: 6.6, number_in_set: 9 },
+ 	"Ultra Rare Full Art (Pokemon)": { pull_rate: 68, number_in_set: 1 },
+	"Ultra Rare Full Art (Trainer)": { pull_rate: 29, number_in_set: 8 },
+	"Rainbow Rare": { pull_rate: 58, number_in_set: 1 },
+	"Secret Rare GOLD (Pokemon)": { pull_rate: 132, number_in_set: 4 },
+	"Secret Rare GOLD (Trainer/Energy)": { pull_rate: 98, number_in_set: 4 },
+	"Shiny": { pull_rate: 3.72, number_in_set: 94 },
+	"Shiny GX": { pull_rate: 8.81, number_in_set: 35 }
+        }
+      },
+"Cosmic Eclipse": {
+        meta: {
+          average_produced: 450000000,
+          in_pack: 10
+        },
+        rarities: {
+	"GX": { pull_rate: 8.39, number_in_set: 16 },
+ 	"Ultra Rare Full Art (Pokemon)": { pull_rate: 37, number_in_set: 18 },
+	"Ultra Rare Full Art (Trainer)": { pull_rate: 101, number_in_set: 9 },
+	"Rainbow Rare": { pull_rate: 66, number_in_set: 14 },
+	"Secret Rare GOLD (Pokemon)": { pull_rate: 9.89, number_in_set: 12 },
+	"Secret Rare GOLD (Trainer/Energy)": { pull_rate: 112, number_in_set: 9 }
+        }
+      }
+},
+
+"GEN 8 - Sword Shield": {
+"Sword Shield Base": {
+        meta: {
+          average_produced: 500000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"V": { pull_rate: 7, number_in_set: 17 },
+	"VMAX/VSTAR": { pull_rate: 45, number_in_set: 4 },
+	"Full Art (Pokemon)": { pull_rate: 35, number_in_set: 12 },
+	"Full Art (Trainer)": { pull_rate: 112, number_in_set: 4 },
+	"Rainbow Rare (Pokemon)": { pull_rate: 201, number_in_set: 4 },
+	"Rainbow Rare (Trainer)": { pull_rate: 136, number_in_set: 4 },
+ 	"Secret Rare Gold (Pokemon)": { pull_rate: 257, number_in_set: 2 },
+	"Secret Rare Gold (Trainer/Energy)": { pull_rate: 192, number_in_set: 4 }
+        }
+      },
+"Rebel Clash": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"V": { pull_rate: 7.9, number_in_set: 16 },
+	"VMAX/VSTAR": { pull_rate: 29, number_in_set: 7 },
+	"Full Art (Pokemon)": { pull_rate: 32, number_in_set: 14 },
+	"Full Art (Trainer)": { pull_rate: 136, number_in_set: 4 },
+	"Rainbow Rare (Pokemon)": { pull_rate: 105, number_in_set: 7 },
+	"Rainbow Rare (Trainer)": { pull_rate: 182, number_in_set: 4 },
+ 	"Secret Rare Gold (Pokemon)": { pull_rate: 304, number_in_set: 2 },
+	"Secret Rare Gold (Trainer/Energy)": { pull_rate: 160, number_in_set: 4 }
+        }
+      },
+"Darkness Ablaze": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"V": { pull_rate: 7.95, number_in_set: 14 },
+	"VMAX/VSTAR": { pull_rate: 25.98, number_in_set: 7 },
+	"Full Art (Pokemon)": { pull_rate: 37, number_in_set: 9 },
+	"Full Art (Trainer)": { pull_rate: 88, number_in_set: 4 },
+	"Rainbow Rare (Pokemon)": { pull_rate: 129, number_in_set: 5 },
+	"Rainbow Rare (Trainer)": { pull_rate: 240, number_in_set: 2 },
+ 	"Secret Rare Gold (Pokemon)": { pull_rate: 265, number_in_set: 2 },
+	"Secret Rare Gold (Trainer/Energy)": { pull_rate: 201, number_in_set: 3 }
+        }
+      },
+"Champions Path": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"V": { pull_rate: 6, number_in_set: 11 },
+	"VMAX/VSTAR": { pull_rate: 30, number_in_set: 3 },
+	"Full Art (Pokemon)": { pull_rate: 26, number_in_set: 4 },
+	"Full Art (Trainer)": { pull_rate: 61, number_in_set: 1 },
+	"Rainbow Rare (Pokemon)": { pull_rate: 114, number_in_set: 3 },
+	"Rainbow Rare (Trainer)": { pull_rate: 145, number_in_set: 2 },
+ 	"Secret Rare Gold (Pokemon)": { pull_rate: 228, number_in_set: 1 },
+	"Secret Rare Gold (Trainer/Energy)": { pull_rate: 114, number_in_set: 1 }
+        }
+      },
+"Shining Fates": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"V": { pull_rate: 9.23, number_in_set: 8 },
+	"VMAX/VSTAR": { pull_rate: 18, number_in_set: 6 },
+	"Full Art (Pokemon)": { pull_rate: 199, number_in_set: 1 },
+	"Full Art (Trainer)": { pull_rate: 36, number_in_set: 8 },
+	"Amazing Rare": { pull_rate: 17, number_in_set: 3 },
+	"Rainbow Rare": { pull_rate: 84, number_in_set: 1 },
+ 	"Secret Rare Gold (Pokemon)": { pull_rate: 109, number_in_set: 2 },
+	"Shining Rare": { pull_rate: 4.4, number_in_set: 120 },
+	"Shining Rare V/VMAX": { pull_rate: 11, number_in_set: 17 }
+        }
+      },
+"Battle Styles": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+	"Full Art (Pokemon)": { pull_rate: 48, number_in_set: 9 },
+	"Full Art (Trainer)": { pull_rate: 94, number_in_set: 4 },
+	"Any Alt Art": { pull_rate: 201, number_in_set: 4 },
+	"Alt Art VMAX": { pull_rate: 703, number_in_set: 2 },
+ 	"Rainbow Rare": { pull_rate: 108, number_in_set: 12 },
+	"Gold Rare": { pull_rate: 117, number_in_set: 6 }
+        }
+      },
+"Chilling Reign": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+	"VMAX/VSTAR": { pull_rate: 24, number_in_set: 8 },
+	"Full Art (Pokemon)": { pull_rate: 49, number_in_set: 18 },
+	"Full Art (Trainer)": { pull_rate: 78, number_in_set: 13 },
+	"Alt Art V": { pull_rate: 147, number_in_set: 10 },
+	"Alt Art VMAX": { pull_rate: 454, number_in_set: 3 },
+ 	"Rainbow Rare": { pull_rate: 122, number_in_set: 20 },
+	"Gold Rare": { pull_rate: 100, number_in_set: 12 }
+        }
+      },
+"Evolving Skies": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+	rarities: {
+	"Normal V": { pull_rate: 9, number_in_set: 18 },
+	"VMAX/VSTAR": { pull_rate: 18, number_in_set: 15 },
+	"Full Art": { pull_rate: 36, number_in_set: 27 },
+	"Any Alt Art": { pull_rate: 228, number_in_set: 17 },
+	"Alt Art V": { pull_rate: 91, number_in_set: 11 },
+	"Alt Art VMAX": { pull_rate: 332, number_in_set: 6 },
+ 	"Rainbow Rare": { pull_rate: 118, number_in_set: 16 },
+	"Gold Rare": { pull_rate: 109, number_in_set: 12 }
+        }
+      },
+"Fusion Strike": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+	rarities: {
+	"Normal V": { pull_rate: 8, number_in_set: 19 },
+	"VMAX/VSTAR": { pull_rate: 30, number_in_set: 8 },
+	"Full Art (Pokemon)": { pull_rate: 58, number_in_set: 13 },
+	"Full Art (Trainer)": { pull_rate: 64, number_in_set: 7 },
+	"Alt Art V": { pull_rate: 91, number_in_set: 4 },
+	"Alt Art VMAX": { pull_rate: 180, number_in_set: 6 },
+ 	"Rainbow Rare": { pull_rate: 127, number_in_set: 11 },
+	"Gold Rare": { pull_rate: 120, number_in_set: 5 }
+        }
+      },
+"Brilliant Stars": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+	rarities: {
+	"Full Art (Trainer)": { pull_rate: 54, number_in_set: 6 },
+	"Trainer Gallery (Non V)": { pull_rate: 8, number_in_set: 12 },
+	"Trainer Gallery (V, VMAX, Trainer)": { pull_rate: 18, number_in_set: 18 },
+ 	"Rainbow Rare": { pull_rate: 51, number_in_set: 8 },
+	"Gold Rare": { pull_rate: 92, number_in_set: 8 }
+        }
+      },
+"Astral Radiance": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+	rarities: {
+	"Normal V": { pull_rate: 8, number_in_set: 19 },
+	"VMAX, VSTAR": { pull_rate: 29, number_in_set: 9 },
+ 	"Full Art V": { pull_rate: 47, number_in_set: 15 },
+	"Full Art Trainer": { pull_rate: 93, number_in_set: 9 },
+	"Any Alt Art": { pull_rate: 135, number_in_set: 6 },
+	"Trainer Gallery (Non V)": { pull_rate: 12, number_in_set: 12 },
+	"Trainer Gallery (V, VMAX, Trainer)": { pull_rate: 24, number_in_set: 16 },
+ 	"Rainbow Rare": { pull_rate: 78, number_in_set: 18 },
+	"Gold Rare": { pull_rate: 130, number_in_set: 9 }
+	}
+      },
+"Lost Origin": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+	rarities: {
+	"Normal V": { pull_rate: 9, number_in_set: 12 },
+	"VMAX, VSTAR": { pull_rate: 39, number_in_set: 7 },
+ 	"Full Art Pokemon V": { pull_rate: 51, number_in_set: 13 },
+	"Full Art Trainer": { pull_rate: 70, number_in_set: 8 },
+	"Any Alt Art": { pull_rate: 201, number_in_set: 4 },
+	"Trainer Gallery (Non V)": { pull_rate: 12, number_in_set: 11 },
+	"Trainer Gallery (V, VMAX, Trainer)": { pull_rate: 32, number_in_set: 17 },
+	"Trainer Gallery (Black Gold)": { pull_rate: 117, number_in_set: 2 },
+ 	"Radiant Rare": { pull_rate: 20, number_in_set: 3 },
+	"Rainbow Rare": { pull_rate: 78, number_in_set: 15 },
+	"Gold Rare": { pull_rate: 131, number_in_set: 6 }
+	}
+      },
+"Silver Tempest": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+	rarities: {
+	"Normal V": { pull_rate: 9, number_in_set: 15 },
+	"VMAX, VSTAR": { pull_rate: 27, number_in_set: 7 },
+ 	"Full Art Pokemon V": { pull_rate: 48, number_in_set: 14 },
+	"Full Art Trainer": { pull_rate: 99, number_in_set: 8 },
+	"Any Alt Art": { pull_rate: 168, number_in_set: 4 },
+	"Trainer Gallery (Non V)": { pull_rate: 12, number_in_set: 11 },
+	"Trainer Gallery (V, VMAX, Trainer)": { pull_rate: 32, number_in_set: 17 },
+	"Trainer Gallery (Black Gold)": { pull_rate: 111, number_in_set: 2 },
+ 	"Radiant Rare": { pull_rate: 22, number_in_set: 3 },
+	"Rainbow Rare": { pull_rate: 80, number_in_set: 14 },
+	"Gold Rare": { pull_rate: 106, number_in_set: 6 }
+	}
+      },
+"Crown Zenith": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+	rarities: {
+	"Normal V": { pull_rate: 8, number_in_set: 17 },
+	"VMAX, VSTAR": { pull_rate: 19, number_in_set: 12 },
+ 	"Textured Energy": { pull_rate: 53, number_in_set: 8 },
+	"Full Art Trainer": { pull_rate: 105, number_in_set: 5 },
+	"Signature Trainer": { pull_rate: 13, number_in_set: 4 },
+	"Radiant Rare": { pull_rate: 22, number_in_set: 3 },
+	"Secret Rare": { pull_rate: 133, number_in_set: 1 },
+	"Galarian Gallery (Non V)": { pull_rate: 4, number_in_set: 31 },
+	"Galarian Gallery (V, VMAX, Trainer)": { pull_rate: 8, number_in_set: 32 },
+	"Galarian Gallery (Gold)": { pull_rate: 122, number_in_set: 4 },
+ 	}
+      }
+    },
+"GEN 9 - Scarlet & Violet": {
+"Scarlet Violet Base": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Ultra Rare": { pull_rate: 15, number_in_set: 20 },
+ 	"Illustration Rare": { pull_rate: 13, number_in_set: 24 },
+	"Secret Illustration Rare": { pull_rate: 32, number_in_set: 10 },
+	"Hyper Rare": { pull_rate: 54, number_in_set: 6 }
+        }
+      },
+"Paldean Evolved": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Ultra Rare": { pull_rate: 15, number_in_set: 26 },
+ 	"Illustration Rare": { pull_rate: 13, number_in_set: 36 },
+	"Secret Illustration Rare": { pull_rate: 32, number_in_set: 15 },
+	"Hyper Rare": { pull_rate: 57, number_in_set: 9 }
+        }
+      },
+"Obsidian Flames": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Ultra Rare": { pull_rate: 15, number_in_set: 12 },
+ 	"Illustration Rare": { pull_rate: 13, number_in_set: 12 },
+	"Secret Illustration Rare": { pull_rate: 32, number_in_set: 6 },
+	"Hyper Rare": { pull_rate: 52, number_in_set: 3 }
+        }
+      },
+"151": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Ultra Rare (Full Art)": { pull_rate: 16, number_in_set: 16 },
+ 	"Illustration Rare": { pull_rate: 12, number_in_set: 16 },
+	"Secret Illustration Rare": { pull_rate: 32, number_in_set: 7 },
+	"Hyper Rare": { pull_rate: 51, number_in_set: 3 }
+        }
+      },
+"Paradox Rift": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Ultra Rare (Full Art)": { pull_rate: 15, number_in_set: 28 },
+ 	"Illustration Rare": { pull_rate: 13, number_in_set: 33 },
+	"Special Illustration Rare": { pull_rate: 47, number_in_set: 15 },
+	"Hyper Rare": { pull_rate: 82, number_in_set: 7 }
+        }
+      },
+"Paldean Fates": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Ultra Rare (Full Art)": { pull_rate: 15, number_in_set: 5 },
+ 	"Illustration Rare": { pull_rate: 14, number_in_set: 3 },
+	"Special Illustration Rare": { pull_rate: 58, number_in_set: 8 },
+	"Hyper Rare": { pull_rate: 62, number_in_set: 7 },
+	"Shiny Rare": { pull_rate: 4, number_in_set: 130 }
+        }
+      },
+"Temporal Forces": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Ultra Rare (Full Art)": { pull_rate: 15, number_in_set: 18},
+	"Ace Spec": { pull_rate: 20, number_in_set: 6 },
+ 	"Illustration Rare": { pull_rate: 13, number_in_set: 23 },
+	"Special Illustration Rare": { pull_rate: 86, number_in_set: 10 },
+	"Hyper Rare": { pull_rate: 139, number_in_set: 6 }
+
+	}
+     },
+"Twilight Masquerade": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Ultra Rare (Full Art)": { pull_rate: 15, number_in_set: 21 },
+	"Ace Spec": { pull_rate: 20, number_in_set: 6 },
+ 	"Illustration Rare": { pull_rate: 13, number_in_set: 21 },
+	"Special Illustration Rare": { pull_rate: 86, number_in_set: 11 },
+	"Hyper Rare": { pull_rate: 146, number_in_set: 6 }
+
+	}
+     },
+"Shrouded Fable": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Ultra Rare (Full Art)": { pull_rate: 15, number_in_set: 20 },
+	"Ace Spec": { pull_rate: 20, number_in_set: 3 },
+ 	"Illustration Rare": { pull_rate: 12, number_in_set: 15 },
+	"Special Illustration Rare": { pull_rate: 67, number_in_set: 5 },
+	"Hyper Rare": { pull_rate: 144, number_in_set: 5 }
+
+	}
+     },
+"Stellar Crown": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Ultra Rare (Full Art)": { pull_rate: 15, number_in_set: 11 },
+	"Ace Spec": { pull_rate: 20, number_in_set: 3 },
+ 	"Illustration Rare": { pull_rate: 13, number_in_set: 13 },
+	"Special Illustration Rare": { pull_rate: 90, number_in_set: 6 },
+	"Hyper Rare": { pull_rate: 137, number_in_set: 3 }
+
+	}
+     },
+"Surging Sparks": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Ultra Rare (Full Art)": { pull_rate: 15, number_in_set: 20 },
+	"Ace Spec": { pull_rate: 20, number_in_set: 8 },
+ 	"Illustration Rare": { pull_rate: 13, number_in_set: 23 },
+	"Special Illustration Rare": { pull_rate: 87, number_in_set: 11 },
+	"Hyper Rare": { pull_rate: 188, number_in_set: 6 }
+
+	}
+     },
+"Prismatic Evolutions": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+	"Pokeball Rev Holo": { pull_rate: 3, number_in_set: 100 },
+	"Masterball Reverse Holo": { pull_rate: 20, number_in_set: 100 },
+ 	"Ultra Rare (Full Art)": { pull_rate: 13, number_in_set: 12 },
+	"Ace Spec": { pull_rate: 21, number_in_set: 8 },
+	"Special Illustration Rare": { pull_rate: 45, number_in_set: 32 },
+	"Hyper Rare": { pull_rate: 180, number_in_set: 5 }
+
+	}
+     },
+"Journey Together": {
+        meta: {
+          average_produced: 1900000000,
+          in_pack: 10
+        },
+        rarities: {
+ 	"Ultra Rare (Full Art)": { pull_rate: 15, number_in_set: 11 },
+ 	"Illustration Rare": { pull_rate: 12, number_in_set: 11 },
+	"Special Illustration Rare": { pull_rate: 86, number_in_set: 6 },
+	"Hyper Rare": { pull_rate: 137, number_in_set: 3 }
+
+	}
+     }
+   }
+};
+
+
+    const generationImages = {
+      "GEN 1": "Gen1.jpg",
+      "GEN 2 - NEO": "Gen2.jpg",
+      "GEN 3 - EX": "Gen3.jpg",
+      "GEN 4 - DPPt / HGSS": "Gen-4.jpg",
+      "GEN 5 - Black White": "Gen5.jpg",
+      "GEN 6 - XY": "Gen6.jpg",
+      "GEN 7 - Sun Moon": "Gen7.jpg",
+      "GEN 8 - Sword Shield": "Gen8.jpg",
+      "GEN 9 - Scarlet & Violet": "Gen9.jpg"
+
+    };
+
+    const generationSelect = document.getElementById('generationSelect');
+    const setSelect = document.getElementById('setSelect');
+    const raritySelect = document.getElementById('raritySelect');
+    const resultDiv = document.getElementById('result');
+    const breakdownDiv = document.getElementById('breakdown');
+    const backgroundBox = document.getElementById('backgroundBox');
+
+    function populateGenerations() {
+      for (let generation in data) {
+        const option = document.createElement('option');
+        option.value = generation;
+        option.textContent = generation;
+        generationSelect.appendChild(option);
+      }
+
+      updateSets();
+      updateBackground();
+    }
+
+    function updateSets() {
+      const generation = generationSelect.value;
+      const sets = data[generation];
+
+      setSelect.innerHTML = '';
+
+      for (let setName in sets) {
+        const option = document.createElement('option');
+        option.value = setName;
+        option.textContent = setName;
+        setSelect.appendChild(option);
+      }
+
+      updateRarities();
+      updateBackground();
+    }
+
+    function updateRarities() {
+      const generation = generationSelect.value;
+      const setName = setSelect.value;
+      const rarities = data[generation][setName].rarities;
+
+      raritySelect.innerHTML = '';
+
+      for (let rarity in rarities) {
+        const option = document.createElement('option');
+        option.value = rarity;
+        option.textContent = rarity;
+        raritySelect.appendChild(option);
+      }
+
+      calculateResult();
+    }
+
+    function updateBackground() {
+      const generation = generationSelect.value;
+      const imageUrl = generationImages[generation];
+
+      if (imageUrl) {
+        backgroundBox.style.backgroundImage = `url('${imageUrl}')`;
+      } else {
+        backgroundBox.style.backgroundImage = 'none';
+      }
+    }
+
+    function calculateResult() {
+      const generation = generationSelect.value;
+      const setName = setSelect.value;
+      const rarityName = raritySelect.value;
+
+      if (!generation || !setName || !rarityName) return;
+
+      const setData = data[generation][setName];
+      const meta = setData.meta;
+      const rarity = setData.rarities[rarityName];
+
+      const { average_produced, in_pack } = meta;
+      const { pull_rate, number_in_set } = rarity;
+
+      let result = average_produced / in_pack / pull_rate / number_in_set;
+
+      const formattedResult = result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const formattedAvg = average_produced.toLocaleString();
+      const formattedInPack = in_pack.toLocaleString();
+      const formattedPullRate = pull_rate.toLocaleString(undefined, { minimumFractionDigits: 2 });
+      const formattedNumberInSet = number_in_set.toLocaleString();
+
+      resultDiv.innerHTML = `Result: <strong>${formattedResult}</strong>`;
+      breakdownDiv.innerHTML = `(${formattedAvg} / ${formattedInPack} / ${formattedPullRate} / ${formattedNumberInSet})`;
+    }
+
+    generationSelect.addEventListener('change', () => {
+      updateSets();
+      updateBackground();
+    });
+
+    setSelect.addEventListener('change', () => {
+      updateRarities();
+    });
+
+    raritySelect.addEventListener('change', calculateResult);
+
+    populateGenerations();
+  </script>
+
+<p>( Average Units Produced per Set / Cards in Pack / Pull Rate per Pack / Rarity Tier in Set ) </p>
+
+<p>// Please note: <I>This calculator does not take into account Language Percentage, Promos & Theme Decks, or differences between Japanese and Foreign Language set makeup / pull rate. Average Units Produced is major assumption. This should be used as a fun thought exercise and not a definitive answer to card print runs. Though, without any of the aforementioned variables we perhaps get a padded "ceiling" on the number of likely produced cards. </i> </p>
+
+</body>
+</html>
